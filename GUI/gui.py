@@ -8,6 +8,7 @@ class GUI(tk.Frame, Data):
 		self.pack()
 		self.createWidgets()
 		self.m_data = Data()
+		self.riskOrGainBool = 0
 
 	def createWidgets(self):
 		self.start = tk.Button(self)
@@ -51,17 +52,11 @@ class GUI(tk.Frame, Data):
 
 	def __accumulateData(self):
 		print("zbieram dane")
-		self.m_data.riskOrBudg = 0
-		self.m_data.mainVar = self.mainVar.get()
-		self.m_data.budget = self.budget.get()
-		self.m_data.maxDay = self.maxDay.get()
-		self.m_data.minBet = self.minBet.get()
-		self.m_data.maxBet = self.maxBet.get()
+		self.m_data = Data(self.riskOrGainBool, self.mainVar.get(), self.budget.get(), self.maxDay.get(), self.minBet.get(), self.maxBet.get())
 
 	def toggleRiskOrGain(self):
 		print("przelaczam obliczanie ryzyka i zysku")
-		print(self.m_data.mainVar)
-		#TODO: ustawienie flagi do kalkulacji w parserze
+		self.riskOrGainBool = (self.riskOrGainBool+1)%2
 
 root = tk.Tk()
 app = GUI(master=root)
