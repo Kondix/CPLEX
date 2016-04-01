@@ -1,14 +1,13 @@
 import tkinter as tk
 from data import *
 
-class GUI(tk.Frame):
-
-	m_data = Data()
+class GUI(tk.Frame, Data):
 
 	def __init__(self, master=None):
 		tk.Frame.__init__(self, master)
 		self.pack()
 		self.createWidgets()
+		self.m_data = Data()
 
 	def createWidgets(self):
 		self.start = tk.Button(self)
@@ -52,15 +51,16 @@ class GUI(tk.Frame):
 
 	def __accumulateData(self):
 		print("zbieram dane")
-		m_data.riskOrBudg = 0
-		m_data.mainVar = self.mainVar.get()
-		m_data.budget = self.budget.get()
-		m_data.maxDay = self.maxDay.get()
-		m_data.minBet = self.minBet.get()
-		m_data.maxBet = self.maxBet.get()
+		self.m_data.riskOrBudg = 0
+		self.m_data.mainVar = self.mainVar.get()
+		self.m_data.budget = self.budget.get()
+		self.m_data.maxDay = self.maxDay.get()
+		self.m_data.minBet = self.minBet.get()
+		self.m_data.maxBet = self.maxBet.get()
 
 	def toggleRiskOrGain(self):
 		print("przelaczam obliczanie ryzyka i zysku")
+		print(self.m_data.mainVar)
 		#TODO: ustawienie flagi do kalkulacji w parserze
 
 root = tk.Tk()
