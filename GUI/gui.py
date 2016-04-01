@@ -1,5 +1,6 @@
 import tkinter as tk
 from data import *
+from parserhttp import *
 
 class GUI(tk.Frame, Data):
 
@@ -9,6 +10,7 @@ class GUI(tk.Frame, Data):
 		self.createWidgets()
 		self.m_data = Data()
 		self.riskOrGainBool = 0
+		self.betsVector = []
 
 	def createWidgets(self):
 		self.start = tk.Button(self)
@@ -47,6 +49,8 @@ class GUI(tk.Frame, Data):
 
 	def downloadParseAndProcess(self):
 		print("zaczynam liczenie")
+		parser = Parser('https://www.efortuna.pl/pl/strona_glowna/serwis_sportowy/nba/index.html')
+		self.betsVector = parser.allBetsVector
 		self.__accumulateData()
 		#TODO: algorytm liczenia
 
