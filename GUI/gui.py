@@ -51,6 +51,7 @@ class GUI(tk.Frame, Data):
 		print("zaczynam liczenie")
 		parser = Parser('https://www.efortuna.pl/pl/strona_glowna/serwis_sportowy/nba/index.html')
 		self.betsVector = parser.allBetsVector
+		print(self.betsVector)
 		self.__accumulateData()
 		#TODO: algorytm liczenia
 
