@@ -6,6 +6,8 @@ from datgenerator import *
 class GUI(tk.Frame, Data):
 
 	def __init__(self, master=None):
+		self.betButtons = []
+
 		tk.Frame.__init__(self, master)
 		self.pack()
 
@@ -73,6 +75,7 @@ class GUI(tk.Frame, Data):
 		self.scrollbar = tk.Scrollbar(self.presentationFrame)
 		self.scrollbar.pack(side = tk.LEFT, fill=tk.Y)
 		self.betNamesList = tk.Listbox(self.presentationFrame, yscrollcommand = self.scrollbar.set)
+		self.betNamesList.bind('<<ListboxSelect>>', self.onBetSelect)
 		self.betNamesList.pack(side = tk.LEFT, fill = tk.Y)
 		self.scrollbar.config(command = self.betNamesList.yview),
 
@@ -80,28 +83,40 @@ class GUI(tk.Frame, Data):
 
 		self.bet1 = tk.Button(self.betsFrame)
 		self.bet1["text"] = "bet1"
-		self.bet1["command"] = lambda: self.toggleBetColor(self.bet1)
+		self.bet1["command"] = lambda: self.__toggleBetColor(self.bet1)
 		self.bet1.pack(side=tk.LEFT, fill = tk.BOTH)
+		self.betButtons.append(self.bet1)
 
 		self.bet2 = tk.Button(self.betsFrame)
 		self.bet2["text"] = "bet2"
-		self.bet2["command"] = lambda: self.toggleBetColor(self.bet2)
+		self.bet2["command"] = lambda: self.__toggleBetColor(self.bet2)
 		self.bet2.pack(side=tk.LEFT, fill = tk.BOTH)
+		self.betButtons.append(self.bet2)
 
 		self.bet3 = tk.Button(self.betsFrame)
 		self.bet3["text"] = "bet3"
-		self.bet3["command"] = lambda: self.toggleBetColor(self.bet3)
+		self.bet3["command"] = lambda: self.__toggleBetColor(self.bet3)
 		self.bet3.pack(side=tk.LEFT, fill = tk.BOTH)
+		self.betButtons.append(self.bet3)
 
 		self.bet4 = tk.Button(self.betsFrame)
 		self.bet4["text"] = "bet4"
-		self.bet4["command"] = lambda: self.toggleBetColor(self.bet4)
+		self.bet4["command"] = lambda: self.__toggleBetColor(self.bet4)
 		self.bet4.pack(side=tk.LEFT, fill = tk.BOTH)
+		self.betButtons.append(self.bet4)
 
 		self.bet5 = tk.Button(self.betsFrame)
 		self.bet5["text"] = "bet5"
-		self.bet5["command"] = lambda: self.toggleBetColor(self.bet5)
+		self.bet5["command"] = lambda: self.__toggleBetColor(self.bet5)
 		self.bet5.pack(side=tk.LEFT, fill = tk.BOTH)
+		self.betButtons.append(self.bet5)
+
+	def onBetSelect(self, evt):
+		w = evt.widget
+		index = int(w.curselection()[0])
+		#value = w.get(index) //moze byc przydatne
+		for idx in range(5):
+			self.betButtons[idx]['text'] = self.betsVector[index][idx+2]
 
 	def downloadParse(self):
 		print("zaczynam pobieranie")
@@ -131,7 +146,7 @@ class GUI(tk.Frame, Data):
 		print("przelaczam obliczanie ryzyka i zysku")
 		self.riskOrGainBool = (self.riskOrGainBool+1)%2
 
-	def toggleBetColor(self, button):
+	def __toggleBetColor(self, button):
 		colors = ['SystemButtonFace', 'green']
 		button.configure(bg = colors[(colors.index(button['bg'])+1)%2])
 
