@@ -33,6 +33,7 @@ class Parser:
 			tempBetsVector = []
 			for c in self.allBetsDetailed[b]:
 				tempBetsVector.append(re.search('(.+?)</a>', str(c)).group(1))
-			tempBetsVector.insert(0, self.betNames[b])
+			tempBetsVector.insert(0, self.allBetsNumbers[b])
+			tempBetsVector.insert(1, self.betNames[b])
 			#TODO: kosmetyczne zmiany w nazwach zakladow (podzial na dwie druzyny)
 			self.allBetsVector.append(tempBetsVector)

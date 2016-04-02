@@ -14,9 +14,14 @@ class GUI(tk.Frame, Data):
 
 	def createWidgets(self):
 		self.start = tk.Button(self)
+		self.start["text"] = "Pobierz"
+		self.start["command"] = self.downloadParse
+		self.start.pack(side=tk.TOP, fill = tk.BOTH)
+
+		self.start = tk.Button(self)
 		self.start["text"] = "Oblicz"
-		self.start["command"] = self.downloadParseAndProcess
-		self.start.pack(side="top")
+		self.start["command"] = self.startProcessing
+		self.start.pack(side=tk.TOP, fill = tk.BOTH)
 
 		self.riskOrGain = tk.Checkbutton(self)
 		self.riskOrGain["text"] = "Zaznacz aby wybrać obliczanie ryzyka.\nWyłączony oznacza kalkulacje zysku."
@@ -49,13 +54,16 @@ class GUI(tk.Frame, Data):
 		self.betNamesList.pack(side = tk.LEFT, fill = tk.BOTH)
 		self.scrollbar.config(command = self.betNamesList.yview)
 
-	def downloadParseAndProcess(self):
-		print("zaczynam liczenie")
+	def downloadParse(self):
+		print("zaczynam pobieranie")
 		parser = Parser('https://www.efortuna.pl/pl/strona_glowna/serwis_sportowy/nba/index.html')
 		self.betsVector = parser.allBetsVector
 		print(self.betsVector)
 		self.__accumulateData()
 		self.__fillBetNamesList()
+
+	def startProcessing(self):
+		print("zaczynam liczenie")
 		#TODO: algorytm liczenia
 
 	def __accumulateData(self):
@@ -66,8 +74,7 @@ class GUI(tk.Frame, Data):
 		self.betNamesList.delete(0, tk.END)
 		print("uzupelniam liste")
 		for idx in range(len(self.betsVector)):
-   			self.betNamesList.insert(tk.END, str(self.betsVector[idx][0]))
-
+   			self.betNamesList.insert(tk.END, str(self.betsVector[idx][1]))
 
 	def toggleRiskOrGain(self):
 		print("przelaczam obliczanie ryzyka i zysku")
