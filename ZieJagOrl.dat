@@ -1,0 +1,14 @@
+/*********************************************
+ * OPL 12.6.3.0 Data
+ * Author: Admin
+ * Creation Date: 01-04-2016 at 19:31:05
+ Automatically generated file.
+ *********************************************/
+
+ nEvents=6; // ID, rate1, rate0, rate2, rate10, rate 02
+ nBets=20; //
+ 
+ budget=3000;
+ maxRisk=0.2;
+ minGain=300;
+ 
