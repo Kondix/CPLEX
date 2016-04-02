@@ -1,6 +1,7 @@
 import tkinter as tk
 from data import *
 from parserhttp import *
+from datgenerator import *
 
 class GUI(tk.Frame, Data):
 
@@ -111,6 +112,8 @@ class GUI(tk.Frame, Data):
 	def startProcessing(self):
 		print("zaczynam liczenie")
 		self.__accumulateData()
+		datGen = DatGenerator(self.m_data)
+		datGen.generateDatFile()
 		#TODO: algorytm liczenia
 
 	def __accumulateData(self):
