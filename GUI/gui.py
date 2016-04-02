@@ -83,31 +83,31 @@ class GUI(tk.Frame, Data):
 
 		self.bet1 = tk.Button(self.betsFrame)
 		self.bet1["text"] = "bet1"
-		self.bet1["command"] = lambda: self.__toggleBetColor(self.bet1)
+		self.bet1["command"] = lambda: self.__toggleBetColor(0)
 		self.bet1.pack(side=tk.LEFT, fill = tk.BOTH)
 		self.betButtons.append(self.bet1)
 
 		self.bet2 = tk.Button(self.betsFrame)
 		self.bet2["text"] = "bet2"
-		self.bet2["command"] = lambda: self.__toggleBetColor(self.bet2)
+		self.bet2["command"] = lambda: self.__toggleBetColor(1)
 		self.bet2.pack(side=tk.LEFT, fill = tk.BOTH)
 		self.betButtons.append(self.bet2)
 
 		self.bet3 = tk.Button(self.betsFrame)
 		self.bet3["text"] = "bet3"
-		self.bet3["command"] = lambda: self.__toggleBetColor(self.bet3)
+		self.bet3["command"] = lambda: self.__toggleBetColor(2)
 		self.bet3.pack(side=tk.LEFT, fill = tk.BOTH)
 		self.betButtons.append(self.bet3)
 
 		self.bet4 = tk.Button(self.betsFrame)
 		self.bet4["text"] = "bet4"
-		self.bet4["command"] = lambda: self.__toggleBetColor(self.bet4)
+		self.bet4["command"] = lambda: self.__toggleBetColor(3)
 		self.bet4.pack(side=tk.LEFT, fill = tk.BOTH)
 		self.betButtons.append(self.bet4)
 
 		self.bet5 = tk.Button(self.betsFrame)
 		self.bet5["text"] = "bet5"
-		self.bet5["command"] = lambda: self.__toggleBetColor(self.bet5)
+		self.bet5["command"] = lambda: self.__toggleBetColor(4)
 		self.bet5.pack(side=tk.LEFT, fill = tk.BOTH)
 		self.betButtons.append(self.bet5)
 
@@ -146,9 +146,9 @@ class GUI(tk.Frame, Data):
 		print("przelaczam obliczanie ryzyka i zysku")
 		self.riskOrGainBool = (self.riskOrGainBool+1)%2
 
-	def __toggleBetColor(self, button):
+	def __toggleBetColor(self, idx):
 		colors = ['SystemButtonFace', 'green']
-		button.configure(bg = colors[(colors.index(button['bg'])+1)%2])
+		self.betButtons[idx].configure(bg = colors[(colors.index(self.betButtons[idx]['bg'])+1)%2])
 
 
 root = tk.Tk()
