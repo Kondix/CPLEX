@@ -77,29 +77,30 @@ class GUI(tk.Frame, Data):
 		self.scrollbar.config(command = self.betNamesList.yview),
 
 	def __initBetsFrame(self):
+
 		self.bet1 = tk.Button(self.betsFrame)
 		self.bet1["text"] = "bet1"
-		self.bet1["command"] = self.startProcessing
+		self.bet1["command"] = lambda: self.toggleBetColor(self.bet1)
 		self.bet1.pack(side=tk.LEFT, fill = tk.BOTH)
 
 		self.bet2 = tk.Button(self.betsFrame)
 		self.bet2["text"] = "bet2"
-		self.bet2["command"] = self.startProcessing
+		self.bet2["command"] = lambda: self.toggleBetColor(self.bet2)
 		self.bet2.pack(side=tk.LEFT, fill = tk.BOTH)
 
 		self.bet3 = tk.Button(self.betsFrame)
 		self.bet3["text"] = "bet3"
-		self.bet3["command"] = self.startProcessing
+		self.bet3["command"] = lambda: self.toggleBetColor(self.bet3)
 		self.bet3.pack(side=tk.LEFT, fill = tk.BOTH)
 
 		self.bet4 = tk.Button(self.betsFrame)
 		self.bet4["text"] = "bet4"
-		self.bet4["command"] = self.startProcessing
+		self.bet4["command"] = lambda: self.toggleBetColor(self.bet4)
 		self.bet4.pack(side=tk.LEFT, fill = tk.BOTH)
 
 		self.bet5 = tk.Button(self.betsFrame)
 		self.bet5["text"] = "bet5"
-		self.bet5["command"] = self.startProcessing
+		self.bet5["command"] = lambda: self.toggleBetColor(self.bet5)
 		self.bet5.pack(side=tk.LEFT, fill = tk.BOTH)
 
 	def downloadParse(self):
@@ -129,6 +130,11 @@ class GUI(tk.Frame, Data):
 	def toggleRiskOrGain(self):
 		print("przelaczam obliczanie ryzyka i zysku")
 		self.riskOrGainBool = (self.riskOrGainBool+1)%2
+
+	def toggleBetColor(self, button):
+		colors = ['SystemButtonFace', 'green']
+		button.configure(bg = colors[(colors.index(button['bg'])+1)%2])
+
 
 root = tk.Tk()
 app = GUI(master=root)
