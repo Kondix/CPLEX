@@ -2,7 +2,7 @@ import tkinter as tk
 from data import *
 from parserhttp import *
 from datgenerator import *
-
+import cplexalgorithm as cpx
 class GUI(tk.Frame, Data):
 
 	def __init__(self, master=None):
@@ -129,7 +129,9 @@ class GUI(tk.Frame, Data):
 		print("zaczynam liczenie")
 		self.__accumulateData()
 		datGen = DatGenerator(self.m_data)
-		datGen.generateDatFile()
+		algo = cpx.cplexModel(datGen.generateDatFile())
+		algo.getValue()
+		
 		#TODO: algorytm liczenia
 
 	def __accumulateData(self):
