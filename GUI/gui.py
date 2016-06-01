@@ -128,8 +128,8 @@ class GUI(tk.Frame, Data):
 	def startProcessing(self):
 		print("zaczynam liczenie")
 		self.__accumulateData()
-		datGen = DatGenerator(self.m_data)
-		algo = cpx.cplexModel(datGen.generateDatFile())
+		#datGen = DatGenerator(self.m_data)
+		algo = cpx.cplexModel(self.m_data)
 		algo.getValue()
 		
 		#TODO: algorytm liczenia
@@ -137,7 +137,7 @@ class GUI(tk.Frame, Data):
 	def __accumulateData(self):
 		print("zbieram dane")
 		self.m_data = Data(self.riskOrGainBool, self.mainVar.get(), self.budget.get(), self.maxDay.get(), self.minBet.get(), self.maxBet.get())
-
+		
 	def __fillBetNamesList(self):
 		self.betNamesList.delete(0, tk.END)
 		print("uzupelniam liste")
