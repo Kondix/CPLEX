@@ -22,25 +22,28 @@ class cplexModel:
 ##       print(model.solution.get_objective_value())
        
     def procced(self):
-       model = cp.Cplex()
+       self.model = cp.Cplex()
        if(self.data.riskOrGain == 0):
-           handle = self.defineProblem(model, self.data)
+           handle = self.defineProblem(self.model, self.data)
        else:
-           handle = self.defineProblem2(model, self.data)
+           handle = self.defineProblem2(self.model, self.data)
        
-       model.solve()
-       model.write("model.lp")
-       print(model.solution.get_objective_value())
+       self.model.solve()
+       self.model.write("model.lp")
+       print(self.model.solution.get_objective_value())
     
     def defineProblem(self,n_model, data):
         n_model.objective.set_sense(n_model.objective.sense.minimize)
         vars = ['x' + str(i) for i in range(1,len(data.k)+1)]
-        n_model.variables.add(names = vars, obj = [1,1,4])
+        n_model.variables.add(names = vars, obj = data.pk)
         coef = [1]*len(data.k)
-        n_model.linear_constraints.add(lin_expr= [cp.SparsePair(ind = vars, val = coef)], senses=["L"], rhs=data.budget)      
+        print(vars)
+        print(coef)
+        budget = [float(data.budget)]
+        n_model.linear_constraints.add(lin_expr= [cp.SparsePair(ind = vars, val = coef)], senses=["L"], rhs=budget)      
 
     def defineProblem2(self,n_model, data):
-        n_model.objective.set_sense(n_model.objective.sense.minimize)
+        n_model.objective.set_sense(n_model.objective.sense.maximize)
         vars = ['x' + str(i) for i in range(1,len(data.k)+1)]
         n_model.variables.add(names = vars, obj = [1,1,4])
         coef = [1]*len(data.k)

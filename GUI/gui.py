@@ -127,6 +127,7 @@ class GUI(tk.Frame, Data):
 
 	def startProcessing(self):
 		print("zaczynam liczenie")
+		print(self.betsVector[0])
 		self.__accumulateData()
 		#datGen = DatGenerator(self.m_data)
 		algo = cpx.cplexModel(self.m_data)
