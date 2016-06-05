@@ -1,39 +1,27 @@
 import urllib.request
 import re
+import sys
 from bs4 import BeautifulSoup
 
 class Parser:
 
-	def __init__(self, addr='http://google.org/'):
+	def __init__(self, addr='http://www.bankier.pl/gielda/notowania/akcje'):
 		self.response = urllib.request.urlopen(addr)
 		self.html = self.response.read()
 		self.soup = BeautifulSoup(self.html, "html.parser")
-		self.allBetsVector = []
-		self.allBetsNumbers = []
-		self.parseBets()
+		self.names=[]
+		self.rates=[]
+		self.parse()
 
-	def parseBets(self):
-		self.allBetsNumbers = []
-		self.allBetsDetailed = []
-		self.betNames = []
-		
-		self.allBets = self.soup.find_all(class_=re.compile('bet_item_info_id'))
+	def parse(self):
+		tagTr = self.soup.find_all("tr") #wyciagam wszystkie pola <tr>
+		for it in tagTr:
+			tagName=it.find_all("td",{"class" : "colWalor textNowrap"}) #wyciagam pola td o atrybucie class rownym colWalor textNowrap
+			if len(tagName)>0:  
+				tagRates=it.find_all("td")   #znajduje pola td
+				rate=tagRates[1].text.replace(",",".")  #drugie pole td przechowuje wartość kursu, podmieniam , na .
+				name=tagName[0].find("a").text  #w pierwszym polu td jest pola a, ktore przechowuje nazwe spolki
+				self.rates.append(rate)
+				self.names.append(name)
 
-		#wyciagamy wszystkie numery zakladow
-		for c in self.allBets:
-			self.allBetsNumbers.append(re.search('>(.+?)<', str(c)).group(1))
-		#iteracja po col_bet oraz atrybucie z numerem zakladu
-		#wyciagniecie nazwy zakladu
-		for c in self.allBetsNumbers:
-			self.allBetsDetailed.append(self.soup.find_all(attrs={'data-info':c}))
-			self.betNames.append(re.search('>(.+?)</a>', str(self.soup.find_all(attrs={'id':'title-'+c}))).group(1))
-			#TODO: wyciaganie pustych betsów
-		#dla kazdego wyciagamy zestaw bidów w kolejnosci
-		for b in range(len(self.allBetsDetailed)):
-			tempBetsVector = []
-			for c in self.allBetsDetailed[b]:
-				tempBetsVector.append(re.search('(.+?)</a>', str(c)).group(1))
-			tempBetsVector.insert(0, self.allBetsNumbers[b])
-			tempBetsVector.insert(1, self.betNames[b])
-			#TODO: kosmetyczne zmiany w nazwach zakladow (podzial na dwie druzyny)
-			self.allBetsVector.append(tempBetsVector)
+

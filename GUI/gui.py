@@ -1,39 +1,72 @@
 import tkinter as tk
-from data import *
 from parserhttp import *
-from datgenerator import *
+from data import *
 import cplexalgorithm as cpx
-class GUI(tk.Frame, Data):
+
+class GUI(tk.Frame):
 
 	def __init__(self, master=None):
-		self.betButtons = []
-
 		tk.Frame.__init__(self, master)
 		self.pack()
-
+		self.data = Data()
+		
 		self.buttonFrame = tk.Frame(self)
 		self.buttonFrame.pack()
-
+		
+		
 		self.dataFrame = tk.Frame(self)
 		self.dataFrame.pack(pady = 5)
-
-		self.presentationFrame = tk.Frame(self)
-		self.presentationFrame.pack(side = tk.LEFT)
-
-		self.betsFrame = tk.Frame(self)
-		self.betsFrame.pack(side = tk.LEFT, fill = tk.X, padx = 5)		
-
+		
+		
+		self.list1Frame = tk.Frame(self)
+		self.list1Frame.pack(side = tk.LEFT)
+		
+		self.list2Frame = tk.Frame(self)
+		self.list2Frame.pack(side = tk.RIGHT)
+		
 		self.createWidgets()
-		self.m_data = Data()
-		self.riskOrGainBool = 0
-		self.betsVector = []
+		
+		self.usedIndex = []
+
 
 	def createWidgets(self):
 		self.__initButtonFrame()
 		self.__initDataFrame()
-		self.__initPresentationFrame()
-		self.__initBetsFrame()
+		self._initListBox1()
+		self._initListBox2()
 
+	def _initListBox1(self):
+		self.scrollbar = tk.Scrollbar(self.list1Frame)
+		self.scrollbar.pack(side = tk.LEFT, fill=tk.Y)
+		self.companiesList = tk.Listbox(self.list1Frame, yscrollcommand = self.scrollbar.set)
+		self.companiesList.bind('<<ListboxSelect>>', self.onCompanySelect)
+		self.companiesList.pack(side = tk.LEFT, fill = tk.Y)
+		self.scrollbar.config(command = self.companiesList.yview),
+		
+	def onCompanySelect(self, evt):
+		w = evt.widget
+		index = int(w.curselection()[0])
+		self.usedIndex.append(index)
+		self.moveToList2Box(self.companiesList.get(index))
+
+	def onChosenCompanySelect(self, evt):
+		w = evt.widget
+		index = int(w.curselection()[0])
+		#value = w.get(index) //moze byc przydatn
+		self.chosenCompaniesList.delete(index)
+                
+
+	def _initListBox2(self):
+		self.scrollbar = tk.Scrollbar(self.list2Frame)
+		self.scrollbar.pack(side = tk.RIGHT, fill=tk.Y)
+		self.chosenCompaniesList = tk.Listbox(self.list2Frame, yscrollcommand = self.scrollbar.set)
+		self.chosenCompaniesList.bind('<<ListboxSelect>>', self.onChosenCompanySelect)
+		self.chosenCompaniesList.pack(side = tk.LEFT, fill = tk.Y)
+		self.scrollbar.config(command = self.chosenCompaniesList.yview),
+		
+	def moveToList2Box(self, company):
+		self.chosenCompaniesList.insert(tk.END, str(company))
+		
 	def __initButtonFrame(self):
 		self.start = tk.Button(self.buttonFrame)
 		self.start["text"] = "Pobierz"
@@ -41,118 +74,54 @@ class GUI(tk.Frame, Data):
 		self.start.pack(side=tk.LEFT, fill = tk.BOTH)
 
 		self.start = tk.Button(self.buttonFrame)
+		self.start["text"] = "Zapisz kursy"
+		self.start["command"] = self.saveToFile
+		self.start.pack(side=tk.LEFT, fill = tk.BOTH)
+		
+		self.start = tk.Button(self.buttonFrame)
 		self.start["text"] = "Oblicz"
 		self.start["command"] = self.startProcessing
 		self.start.pack(side=tk.LEFT, fill = tk.BOTH)
-
+		
 	def __initDataFrame(self):
-		self.riskOrGain = tk.Checkbutton(self.dataFrame)
-		self.riskOrGain["text"] = "Zaznacz aby wybrać obliczanie ryzyka.\nWyłączony oznacza kalkulacje zysku."
-		self.riskOrGain["command"] = self.toggleRiskOrGain
-		self.riskOrGain.pack(side = tk.TOP)
-
-		self.mainVar = tk.Entry(self.dataFrame)
-		self.mainVar.insert(0, "Ryzyko/zysk")
-		self.mainVar.pack(side = tk.BOTTOM)
-
 		self.budget = tk.Entry(self.dataFrame)
-		self.budget.insert(0, "Kwota")
+		self.budget.insert(0, "Srodki pieniezne [PLN]")
 		self.budget.pack(side = tk.BOTTOM)
-
-		self.maxDay = tk.Entry(self.dataFrame)
-		self.maxDay.insert(0, "Ilosc dni")
-		self.maxDay.pack(side = tk.BOTTOM)
-
-		self.minBet = tk.Entry(self.dataFrame)
-		self.minBet.insert(0, "minBet")
-		self.minBet.pack(side = tk.BOTTOM)
-
-		self.maxBet = tk.Entry(self.dataFrame)
-		self.maxBet.insert(0, "maxBet")
-		self.maxBet.pack(side = tk.BOTTOM)
-
-	def __initPresentationFrame(self):
-		self.scrollbar = tk.Scrollbar(self.presentationFrame)
-		self.scrollbar.pack(side = tk.LEFT, fill=tk.Y)
-		self.betNamesList = tk.Listbox(self.presentationFrame, yscrollcommand = self.scrollbar.set)
-		self.betNamesList.bind('<<ListboxSelect>>', self.onBetSelect)
-		self.betNamesList.pack(side = tk.LEFT, fill = tk.Y)
-		self.scrollbar.config(command = self.betNamesList.yview),
-
-	def __initBetsFrame(self):
-
-		self.bet1 = tk.Button(self.betsFrame)
-		self.bet1["text"] = "bet1"
-		self.bet1["command"] = lambda: self.__toggleBetColor(0)
-		self.bet1.pack(side=tk.LEFT, fill = tk.BOTH)
-		self.betButtons.append(self.bet1)
-
-		self.bet2 = tk.Button(self.betsFrame)
-		self.bet2["text"] = "bet2"
-		self.bet2["command"] = lambda: self.__toggleBetColor(1)
-		self.bet2.pack(side=tk.LEFT, fill = tk.BOTH)
-		self.betButtons.append(self.bet2)
-
-		self.bet3 = tk.Button(self.betsFrame)
-		self.bet3["text"] = "bet3"
-		self.bet3["command"] = lambda: self.__toggleBetColor(2)
-		self.bet3.pack(side=tk.LEFT, fill = tk.BOTH)
-		self.betButtons.append(self.bet3)
-
-		self.bet4 = tk.Button(self.betsFrame)
-		self.bet4["text"] = "bet4"
-		self.bet4["command"] = lambda: self.__toggleBetColor(3)
-		self.bet4.pack(side=tk.LEFT, fill = tk.BOTH)
-		self.betButtons.append(self.bet4)
-
-		self.bet5 = tk.Button(self.betsFrame)
-		self.bet5["text"] = "bet5"
-		self.bet5["command"] = lambda: self.__toggleBetColor(4)
-		self.bet5.pack(side=tk.LEFT, fill = tk.BOTH)
-		self.betButtons.append(self.bet5)
-
-	def onBetSelect(self, evt):
-		w = evt.widget
-		index = int(w.curselection()[0])
-		#value = w.get(index) //moze byc przydatne
-		for idx in range(5):
-			self.betButtons[idx]['text'] = self.betsVector[index][idx+2]
+		
+		self.gain = tk.Entry(self.dataFrame)
+		self.gain.insert(0, "Pozadany zysk [%]")
+		self.gain.pack(side = tk.BOTTOM)
 
 	def downloadParse(self):
 		print("zaczynam pobieranie")
-		parser = Parser('https://www.efortuna.pl/pl/strona_glowna/serwis_sportowy/nba/index.html')
-		self.betsVector = parser.allBetsVector
-		print(self.betsVector)
-		self.__fillBetNamesList()
-
+		parser = Parser('http://www.bankier.pl/gielda/notowania/akcje')
+		self.namesList = parser.names
+		self.ratesList = parser.rates
+		print(self.namesList)
+		print(self.ratesList)
+		self.__fillList1()
+	def __fillList1(self):
+		self.companiesList.delete(0, tk.END)
+		print("uzupelniam liste")
+		for idx in range(len(self.namesList)):
+			self.companiesList.insert(tk.END, str(self.namesList[idx]) + '---' + str(self.ratesList[idx]))
+			
+	def setData(self):
+		rdyToCpyRates= []
+		rdyToCpyNames= []
+		for i in range(len(self.usedIndex)):
+			rdyToCpyRates.append(self.ratesList[int(self.usedIndex[i])])
+			rdyToCpyNames.append(self.namesList[int(self.usedIndex[i])])
+		self.data = Data(self.budget.get(), self.gain.get(), rdyToCpyRates, rdyToCpyNames)
+		
 	def startProcessing(self):
-		print("zaczynam liczenie")
-		print(self.betsVector[0])
-		self.__accumulateData()
-		#datGen = DatGenerator(self.m_data)
-		algo = cpx.cplexModel(self.m_data)
+		self.setData()
+		algo = cpx.cplexModel(self.data)
 		algo.getValue()
 		
-		#TODO: algorytm liczenia
-
-	def __accumulateData(self):
-		print("zbieram dane")
-		self.m_data = Data(self.riskOrGainBool, self.mainVar.get(), self.budget.get(), self.maxDay.get(), self.minBet.get(), self.maxBet.get())
-		
-	def __fillBetNamesList(self):
-		self.betNamesList.delete(0, tk.END)
-		print("uzupelniam liste")
-		for idx in range(len(self.betsVector)):
-   			self.betNamesList.insert(tk.END, str(self.betsVector[idx][1]))
-
-	def toggleRiskOrGain(self):
-		print("przelaczam obliczanie ryzyka i zysku")
-		self.riskOrGainBool = (self.riskOrGainBool+1)%2
-
-	def __toggleBetColor(self, idx):
-		colors = ['SystemButtonFace', 'green']
-		self.betButtons[idx].configure(bg = colors[(colors.index(self.betButtons[idx]['bg'])+1)%2])
-
+	def saveToFile(self):
+		self.setData()
+		self.data.generateDatFile()
 
 root = tk.Tk()
 app = GUI(master=root)

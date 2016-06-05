@@ -2,7 +2,6 @@ import cplex as cp
 from cplex.exceptions import CplexError
 import data as Data
 
-from inputdata import read_dat_file
 
 class cplexModel:
     

@@ -1,33 +1,50 @@
-import datetime as dt
-from datetime import date
-from time import strftime
+import os.path
 
-class DatGenerator:
+#guiData
+budget=10000
+minGain=1
+names=['Test1','Test2','Test3']
+rates=["23", "34", "56"]
 
-	def __init__(self, data): ##potrzebuje przekazywac dane: tablica kursów < nowa klasa i nowy argument
-		print("rozpoczynam.")
-		self.data=data
+datFileName='Proje2kt.dat'
 
-	def generateDatFile(self): 
-		print('generuje plik .dat ...')
-		f = open('project.dat', 'w')
-		##f.write('/*********************************************\n * OPL 12.6.3.0 Data\n * Creation Date: ')
-		###f.write(strftime('%Y-%m-%d at %H:%M:%S\n'))
-		##f.write(' * Automatically generated file.\n*********************************************/\n\n')
-		##f.write('nEvents=' + ?? + '; //ID, rate1, rate0, rate2, rate10, rate 02\n') ##<<liczba kolumn w tablicy kursów - 1 (nazwa druzyn ktore graja)
-		##f.write('nBets='+ ?? +';\n')  ##<<liczba meczów
-		#f.write('riskGain=' + str(self.data.riskOrGain) +'; //risk[0] or Gain[1]\n')
-		f.write(self.data.budget+',')
-		f.write(str(self.data.riskOrGain))
-		f.close()
-		print('wygenerowano: ' + strftime('%Y-%m-%d at %H:%M:%S\n'))
-		return f.name
-		
-		
-        
-		#f.write('budget=' + self.data.budget +'; //Budget Value\n')
-		#f.write('mainVar' + self.data.mainVar +'; //Risk||Gain Value\n')
-		##f.write('ratesTable=[ ')
-		##TODO petla wpisujaca pola do tablicy.
-		##f.write('];\n')
-		
+if os.path.isfile(datFileName):
+	datFile=open(datFileName,'r')
+	lines=datFile.readlines()
+	datFile.close()
+	datFile=open(datFileName,'w')
+	datFile.truncate(0)
+	datFile.write("budget="+str(budget)+";\n")
+	datFile.write("minGain="+str(minGain)+";\n")
+	datFile.write("nCurrencies="+str(len(names))+";\n")
+	datFile.write("nSamples="+str(len(lines)-6)+";\n")
+	datFile.write("names=[")
+	for name in names[:-1]:
+		datFile.write("\""+name+"\",")
+	datFile.write("\""+name+"\"];\n")
+
+	datFile.write("quotes=[\n")
+	for line in lines[6:(len(lines)-1)]:
+		datFile.write(line)
+	datFile.write("[")
+	for rate in rates[:-1]:
+		datFile.write(rate+",")
+	datFile.write(rate+"]\n];")
+
+else:
+	datFile=open(datFileName,'a')
+	datFile.write("budget="+str(budget)+";\n")
+	datFile.write("minGain="+str(minGain)+";\n")
+	datFile.write("nCurrencies="+str(len(names))+";\n")
+	datFile.write("nSamples=1;\n")
+	datFile.write("names=[")
+	for name in names[:-1]:
+		datFile.write("\""+name+"\",")
+	datFile.write("\""+name+"\"];\n")
+
+	datFile.write("quotes=[\n[")
+	for rate in rates[:-1]:
+		datFile.write(rate+",")
+	datFile.write(rate+"]\n];")
+
+datFile.close()
